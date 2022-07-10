@@ -17,7 +17,7 @@ RUN pip3 install --upgrade pynvim
 COPY xdgenv.sh /etc/profile.d
 COPY editor.sh /etc/profile.d
 
-RUN pacman -Sq --noconfirm sudo ripgrep fd docker
+RUN pacman -Sq --noconfirm sudo ripgrep fd docker openssh
 RUN useradd --create-home neovim
 RUN echo 'neovim ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/neovim
 RUN touch /var/run/docker.sock && chown root:neovim /var/run/docker.sock
@@ -41,5 +41,3 @@ RUN . /etc/profile.d/xdgenv.sh && \
 
 ENTRYPOINT [ "/sbin/entry.sh" ]
 CMD [ "nvim" ]
-
-# vim: ft=dockerfile
