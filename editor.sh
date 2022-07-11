@@ -1,2 +1,2 @@
 # editor.sh
-export EDITOR=/usr/bin/vi
+export EDITOR=/usr/bin/nvim

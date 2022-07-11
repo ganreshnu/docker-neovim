@@ -14,17 +14,20 @@ COPY --from=build_neovim /install /usr
 RUN npm install -g neovim
 RUN pip3 install --upgrade pynvim
 
-COPY xdgenv.sh /etc/profile.d
-COPY editor.sh /etc/profile.d
-
 RUN pacman -Sq --noconfirm sudo ripgrep fd docker openssh
+RUN pacman -Scc
+
 RUN useradd --create-home neovim
 RUN echo 'neovim ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/neovim
 RUN touch /var/run/docker.sock && chown root:neovim /var/run/docker.sock
 
 COPY entry.sh /sbin
-COPY profile.ps1 /usr/share
-COPY profile.sh /usr/share
+COPY alias.ps1 /usr/share
+COPY alias.sh /usr/share
+
+COPY xdgenv.sh /etc/profile.d
+COPY editor.sh /etc/profile.d
+COPY profiles.sh /etc/profile.d
 
 USER neovim
 WORKDIR /home/neovim
@@ -32,6 +35,7 @@ WORKDIR /home/neovim
 RUN . /etc/profile.d/xdgenv.sh && \
 	git clone https://github.com/ganreshnu/config-openssh.git ${HOME}/.ssh && \
 	chmod go-rwx ${HOME}/.ssh && \
+	mkdir -p ${HOME}/.local/bin && ln -s ${XDG_CONFIG_HOME}/gnupg/gpgid.sh ${HOME}/.local/bin/gpgid && \
 	git clone https://github.com/ganreshnu/config-gnupg.git ${XDG_CONFIG_HOME}/gnupg && \
 	chmod go-rwx ${XDG_CONFIG_HOME}/gnupg && \
 	git clone https://github.com/ganreshnu/config-nvim.git ${XDG_CONFIG_HOME}/nvim && \

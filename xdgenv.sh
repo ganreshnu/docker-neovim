@@ -5,3 +5,5 @@ export XDG_CACHE_HOME=${HOME}/.cache
 
 export GNUPGHOME=${XDG_CONFIG_HOME}/gnupg
 export ZDOTDIR=${XDG_CONFIG_HOME}/zsh
+
+export PATH="${HOME}/.local/bin:${PATH}"
