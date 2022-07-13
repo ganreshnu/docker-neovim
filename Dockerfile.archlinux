@@ -21,10 +21,10 @@ RUN useradd --create-home neovim
 RUN echo 'neovim ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/neovim
 RUN touch /var/run/docker.sock && chown root:neovim /var/run/docker.sock
 
-COPY profile.d/* /etc/profile.d
+COPY profile.d/* /etc/profile.d/
 
 USER neovim
-WORKDIR ${HOME}
+WORKDIR /home/neovim
 
 RUN . /etc/profile.d/1-xdgenv.sh && \
 	git clone https://github.com/ganreshnu/config-openssh.git ${HOME}/.ssh && \
@@ -43,5 +43,5 @@ USER root
 COPY entry.sh /sbin
 
 USER neovim
-WORKDIR ${HOME}
+
 ENTRYPOINT [ "/sbin/entry.sh" ]
