@@ -22,26 +22,9 @@ RUN echo 'neovim ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/neovim
 RUN touch /var/run/docker.sock && chown root:neovim /var/run/docker.sock
 
 COPY profile.d/* /etc/profile.d/
-
-USER neovim
-WORKDIR /home/neovim
-
-RUN . /etc/profile.d/1-xdgenv.sh && \
-	git clone https://github.com/ganreshnu/config-openssh.git ${HOME}/.ssh && \
-	chmod go-rwx ${HOME}/.ssh && \
-	ssh-keyscan github.com >> ${HOME}/.ssh/known_hosts && \
-	mkdir -p ${HOME}/.local/bin && ln -s ${XDG_CONFIG_HOME}/gnupg/gpgid.sh ${HOME}/.local/bin/gpgid && \
-	git clone https://github.com/ganreshnu/config-gnupg.git ${XDG_CONFIG_HOME}/gnupg && \
-	chmod go-rwx ${XDG_CONFIG_HOME}/gnupg && \
-	git clone https://github.com/ganreshnu/config-nvim.git ${XDG_CONFIG_HOME}/nvim && \
-	git clone https://github.com/wbthomason/packer.nvim.git ${XDG_DATA_HOME}/nvim/site/pack/packer/start/packer.nvim && \
-	mkdir -p ${XDG_STATE_HOME} && \
-	nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
-
-USER root
-
 COPY entry.sh /sbin
 
 USER neovim
+WORKDIR /home/neovim
 
 ENTRYPOINT [ "/sbin/entry.sh" ]
