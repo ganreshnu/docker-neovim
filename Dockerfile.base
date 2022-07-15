@@ -23,6 +23,9 @@ RUN touch /var/run/docker.sock && chown root:neovim /var/run/docker.sock
 
 COPY profile.d/* /etc/profile.d/
 COPY entry.sh /sbin
+COPY wrappers/* /usr/share/wrappers/
+
+RUN for w in /usr/share/wrappers/*.sh; do f=$(basename $w); ln -s $w /usr/bin/${f%.sh}; done
 
 USER neovim
 WORKDIR /home/neovim

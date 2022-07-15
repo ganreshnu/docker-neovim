@@ -1,0 +1,23 @@
+FROM archlinux:latest AS base
+RUN pacman -Syuq --noconfirm && pacman -Sq --noconfirm base-devel git cmake unzip
+
+#FROM base as neovim-build
+#RUN git clone --depth=1 https://github.com/neovim/neovim.git
+#ARG VERSION=master
+#RUN cd neovim && git checkout ${VERSION} && make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=/install install
+#
+#FROM base
+#COPY --from=neovim-build /install /usr
+#RUN useradd --create-home neovim
+#
+#COPY profile.d/* /etc/profile.d/
+#
+#USER neovim
+#WORKDIR /home/neovim
+#
+#RUN git clone https://github.com/ganreshnu/config-nvim.git .config/nvim
+#RUN . /etc/profile.d/1-xdgenv.sh && \
+#	git clone https://github.com/wbthomason/packer.nvim.git ${XDG_DATA_HOME}/nvim/site/pack/packer/start/packer.nvim && \
+#	mkdir -p ${XDG_STATE_HOME}
+##RUN nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
+
