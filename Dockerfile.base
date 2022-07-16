@@ -1,21 +1,32 @@
 FROM archlinux:latest AS base
 RUN pacman -Syuq --noconfirm && pacman -Sq --noconfirm git
 
-FROM base AS build_neovim
+FROM base AS build
 RUN pacman -Sq --noconfirm base-devel cmake unzip
+
+FROM build AS build-neovim
 RUN git clone --depth=1 https://github.com/neovim/neovim.git
 ARG VERSION=master
 RUN cd neovim && git checkout ${VERSION} && make CMAKE_BUILD_TYPE=RelWithDebInfo CMAKE_INSTALL_PREFIX=/install install
 
+FROM build AS build-gnupg
+RUN pacman -Sq --noconfirm imagemagick librsvg fig2dev
+#RUN git clone --depth=1 git://git.gnupg.org/gnupg.git
+#RUN cd gnupg && ./autogen.sh && ./configure --prefix=/install --mandir=/install/man --sysconfdir=/etc --enable-maintainer-mode && make && make install
+RUN curl -s https://gnupg.org/ftp/gcrypt/gnupg/gnupg-2.3.7.tar.bz2 | tar xj
+RUN cd gnupg-2.3.7 && ./configure --mandir=\\${prefix}/man && make && make prefix=/install install
+
 FROM base
 RUN pacman -Sq --noconfirm libnsl python python-pip npm
-COPY --from=build_neovim /install /usr
+COPY --from=build-neovim /install /usr
 
 RUN npm install -g neovim
 RUN pip3 install --upgrade pynvim
 
 RUN pacman -Sq --noconfirm sudo ripgrep fd docker openssh
 RUN yes | pacman -Scc
+
+COPY --from=build-gnupg /install /usr/local
 
 RUN useradd --create-home neovim
 RUN echo 'neovim ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/neovim

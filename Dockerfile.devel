@@ -1,5 +1,5 @@
 FROM archlinux:latest AS base
-RUN pacman -Syuq --noconfirm && pacman -Sq --noconfirm base-devel git cmake unzip
+RUN pacman -Syuq --noconfirm && pacman -Sq --noconfirm base-devel git cmake unzip imagemagick librsvg fig2dev
 
 #FROM base as neovim-build
 #RUN git clone --depth=1 https://github.com/neovim/neovim.git
