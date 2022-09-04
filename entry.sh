@@ -71,4 +71,6 @@ done
 [ $wanthelp -eq 1 ] && showhelp && exit
 [ $wanthelp -eq 2 ] && showhelp && exit 1
 
+sudo chown root:neovim /var/run/docker.sock
+
 exec $@
